@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
-const InputBox = ({ type, label, placeholder }) => {
+const InputBox = ({
+  type = "text",
+  label,
+  placeholder,
+  setInput,
+  inputValue,
+}) => {
   const [inputType, setInputType] = useState(type);
 
   function changeInputType() {
@@ -12,6 +18,10 @@ const InputBox = ({ type, label, placeholder }) => {
     <fieldset className="fieldset relative">
       <legend className="fieldset-legend text-lg">{label}</legend>
       <input
+        onChange={(e) => {
+          setInput(e.target.value);
+        }}
+        value={inputValue}
         type={inputType}
         placeholder={placeholder}
         className="input w-full"
