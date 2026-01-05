@@ -1,37 +1,35 @@
-import React from "react";
 import InputBox from "../../components/InputBox";
 import BackButton from "../../components/BackButton";
-import api from "../../Api/api";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import useStore from "../../zustand/zustand";
 import API from "../../Api/api";
 import API_ROUTES from "../../Api/ROUTE";
+import { toast } from "react-toastify";
 
 const Add_Activities = () => {
   const navigate = useNavigate();
+  const [duration, setDuration] = useState({ h: 0, m: 0, s: 0 });
   const [activityInfo, setActivityInfo] = useState({
     title: "",
     maxSpeed: "",
     distance: "",
-    duration: "",
-    avgSpeed: "",
-    intensity: "",
+    rideIntensity: "",
   });
   const [error, setError] = useState("");
-  const { setUser } = useStore();
   const createActivityAPI = async (e) => {
     e.preventDefault();
-    return console.log(activityInfo);
-
+    let totalSecond = 0;
+    totalSecond +=
+      Number(duration.h) * 3600 + Number(duration.m) * 60 + Number(duration.s);
     try {
-      const response = await API.post(API_ROUTES.AUTH.LOGIN, {
-        ...userInfo,
+      const response = await API.post(API_ROUTES.ACTIVITIES.CREATE, {
+        ...activityInfo,
+        duration: totalSecond,
       });
-      if (response.status === 200) {
-        setUser(response.data.user);
+      if (response.status === 201) {
         toast.success(response.data.message);
-        navigate("/dashboard");
+        setError("");
+        navigate("/activities");
       }
     } catch (err) {
       console.error(err);
@@ -77,31 +75,47 @@ const Add_Activities = () => {
           />
         </div>
         <div className="flex-1">
-          <InputBox
-            label="Duration"
-            placeholder="How long did you exercised ?"
-            inputValue={activityInfo.duration}
-            setInput={(value) =>
-              setActivityInfo({ ...activityInfo, duration: value })
-            }
-          />
-          <InputBox
-            label="Average Speed (optional)"
-            placeholder=""
-            inputValue={activityInfo.avgSpeed}
-            setInput={(value) =>
-              setActivityInfo({ ...activityInfo, avgSpeed: value })
-            }
-          />
+          <fieldset className="fieldset relative">
+            <legend className="fieldset-legend text-lg">Duration</legend>
+            <div className="flex gap-2">
+              <input
+                onChange={({ target }) => {
+                  setDuration((pre) => ({ ...pre, h: target.value }));
+                }}
+                type="number"
+                placeholder="hours"
+                className="input w-full"
+              />
+              <input
+                onChange={({ target }) => {
+                  setDuration((pre) => ({ ...pre, m: target.value }));
+                }}
+                type="number"
+                placeholder="minutes"
+                className="input w-full"
+              />
+              <input
+                onChange={({ target }) => {
+                  setDuration((pre) => ({ ...pre, s: target.value }));
+                }}
+                type="number"
+                placeholder="seconds"
+                className="input w-full"
+              />
+            </div>
+          </fieldset>
           <div>
-            <label htmlFor="intensity" className="fieldset-legend text-lg">
+            <label htmlFor="rideIntensity" className="fieldset-legend text-lg">
               Intensity
             </label>
             <select
               onChange={(e) => {
-                setActivityInfo({ ...activityInfo, intensity: e.target.value });
+                setActivityInfo({
+                  ...activityInfo,
+                  rideIntensity: e.target.value,
+                });
               }}
-              id="intensity"
+              id="rideIntensity"
               className="select select-primary w-full"
             >
               <option value="Easy" className="text-green-500">
@@ -118,51 +132,12 @@ const Add_Activities = () => {
               </option>
             </select>
           </div>
-          <div className="text-error pt-4 text-lg"></div>
-          <div className="text-right">
-            <button className="btn btn-primary w-1/2">Add Activity</button>
-          </div>
+          <div className="text-error pt-4 text-lg mt-9 ">{error}</div>
+          <button className="btn btn-primary w-full ">Add Activity</button>
         </div>
       </form>
     </div>
   );
 };
-
-/* const mongoose = require("mongoose");
-
-const ActivitySchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    require: true,
-  },
-  title: {
-    type: String,
-    default: "",
-  },
-  avgSpeed: {
-    type: Number,
-    require: true,
-  },
-  maxSpeed: {
-    type: Number,
-    require: true,
-  },
-  distance: {
-    type: Number,
-    require: true,
-  },
-  duration: {
-    type: Number,
-    require: true,
-  },
-  date: {
-    type: Date,
-    default: () => Date.now(),
-  },
-});
-
-module.exports = mongoose.model("Activity", ActivitySchema);
- */
 
 export default Add_Activities;

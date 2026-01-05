@@ -3,6 +3,7 @@ const API_ROUTES = {
     LOGIN: "/auth/login",
     SIGNUP: "/auth/signup",
     LOGOUT: "/auth/logout",
+    GET_USER: "/auth",
   },
   ACTIVITIES: {
     CREATE: "/activities/create",

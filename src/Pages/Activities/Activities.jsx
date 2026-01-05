@@ -1,9 +1,30 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+import API from "../../Api/api";
+import API_ROUTES from "../../Api/ROUTE";
+import useStore from "../../zustand/zustand";
+import ActivityList from "./ActivityList";
+import ActivityChart from "../../components/Activity/ActivityChart";
 
 const Activities = () => {
   const navigate = useNavigate();
+  const { setActivities, activities } = useStore();
+  const getActivitiesAPI = async () => {
+    try {
+      const response = await API.get(API_ROUTES.ACTIVITIES.GET_ALL);
+      console.log(response);
+      if (response.status === 200) {
+        setActivities(response.data.activities, response.data.summary);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  useEffect(() => {
+    getActivitiesAPI();
+  }, []);
+
   return (
     <div>
       <div className="flex justify-end p-2">
@@ -16,11 +37,13 @@ const Activities = () => {
           <IoIosAddCircleOutline size={25} /> Add activity
         </button>
       </div>
-      <div>
+      <div className=" p-2">
         {/* graphs */}
-        <div></div>
+        <ActivityChart data={activities.data} summary={activities.summary} />
         {/* list */}
-        <div></div>
+        <div>
+          <ActivityList getActivitiesAPI={getActivitiesAPI} />
+        </div>
       </div>
     </div>
   );

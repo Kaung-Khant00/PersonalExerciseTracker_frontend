@@ -10,19 +10,28 @@ import Dashboard from "./Pages/Dashboard";
 import DashboardLayout from "./Pages/DashboardLayout";
 import Activities from "./Pages/Activities/Activities";
 import Add_Activities from "./Pages/Activities/Add_Activities";
+import Edit_Activity from "./Pages/Activities/Edit_Activity";
+import AuthLayer from "./Pages/Auth/AuthLayer";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <DashboardLayout />,
+    element: <AuthLayer />,
     children: [
-      { index: true, element: <Navigate to="/dashboard" /> },
-      { path: "dashboard", element: <Dashboard /> },
       {
-        path: "activities",
+        path: "/",
+        element: <DashboardLayout />,
         children: [
-          { index: true, element: <Activities /> },
-          { path: "add", element: <Add_Activities /> },
+          { index: true, element: <Navigate to="/dashboard" /> },
+          { path: "dashboard", element: <Dashboard /> },
+          {
+            path: "activities",
+            children: [
+              { index: true, element: <Activities /> },
+              { path: "add", element: <Add_Activities /> },
+              { path: "edit", element: <Edit_Activity /> },
+            ],
+          },
         ],
       },
     ],
@@ -36,34 +45,6 @@ const router = createBrowserRouter([
     ],
   },
 ]);
-
-/* 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <DashboardLayout />,
-    children: [
-      { path: "dashboard", element: <Dashboard /> },
-      {
-        path: "activities",
-        children: [
-          { index: true, element: <Activities /> },
-          { path: "add", element: <Add_Activities /> },
-        ],
-      },
-    ],
-  },
-  {
-    path: "/auth",
-    element: <AuthLayout />,
-    children: [
-      { path: "login", element: <Login /> },
-      { path: "signup", element: <Signup /> },
-    ],
-  },
-]);
-
-*/
 
 const App = () => <RouterProvider router={router} />;
 

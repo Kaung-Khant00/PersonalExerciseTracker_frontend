@@ -1,11 +1,13 @@
 import React from "react";
-import API_ROUTES from "../Api/ROUTE.js";
-import API from "../Api/api.js";
+import API_ROUTES from "../../Api/ROUTE.js";
+import API from "../../Api/api.js";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import useStore from "../../zustand/zustand.js";
 
 const NavBar = () => {
   const navigate = useNavigate();
+  const { user } = useStore();
   const logoutAPI = async () => {
     try {
       const response = await API.get(API_ROUTES.AUTH.LOGOUT);
@@ -41,7 +43,7 @@ const NavBar = () => {
             <path d="M14 10l2 2l-2 2"></path>
           </svg>
         </label>
-        <div className="px-4">Kaung Khant's personal tracker</div>
+        <div className="px-4">{user.userName}'s personal tracker</div>
       </div>
       <div>
         <button className="btn btn-error" onClick={logoutAPI}>

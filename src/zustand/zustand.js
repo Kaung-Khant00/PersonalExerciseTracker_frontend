@@ -1,17 +1,41 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 
 // Simple zustand store with devtools + persistence
 const useStore = create(
-  persist(
+  devtools(
     (set, get) => ({
       // state
       user: null,
       theme: "light",
       loading: false,
+      activities: {
+        data: [],
+        loading: false,
+        summary: {
+          totalDistance: 0,
+          totalDuration: 0,
+          maxDistance: 0,
+          minDistance: 0,
+          maxDuration: 0,
+          minDuration: 0,
+        },
+        error: null,
+      },
+      editingActivity: null,
 
       // actions
       setUser: (user) => set({ user }),
+      setActivities: (activities, summary) =>
+        set({
+          activities: {
+            data: activities,
+            summary,
+            loading: false,
+            error: null,
+          },
+        }),
+      setEditingActivity: (activity) => set({ editingActivity: activity }),
       logout: () => set({ user: null }),
 
       toggleTheme: () =>

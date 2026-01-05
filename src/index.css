@@ -16,6 +16,9 @@
   .box {
     @apply bg-base-300 py-3 px-5 border border-gray-300 m-2;
   }
+  .card .badge {
+    color: white !important;
+  }
 }
 
 @theme {
